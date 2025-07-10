@@ -1,1 +1,0 @@
-## Heroman django app
