@@ -8,6 +8,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test, login_required
+from .models import UserProfile
 # Create your views here.
 
 def list_all_books(request):
@@ -56,3 +58,23 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return render(request, 'relationship_app/logout.html')
+
+def check_role(role):
+    def _check(user):
+        return hasattr(user, 'userprofile') and user.userprofile.role == role
+    return _check
+
+@user_passes_test(check_role('Admin'))
+@login_required
+def admin_view(request):
+    return render(request, 'relationship_app/admin_view.html')
+
+@user_passes_test(check_role('Librarian'))
+@login_required
+def librarian_view(request):
+    return render(request, 'relationship_app/librarian_view.html')
+
+@user_passes_test(check_role('Member'))
+@login_required
+def member_view(request):
+    return render(request, 'relationship_app/member_view.html')
