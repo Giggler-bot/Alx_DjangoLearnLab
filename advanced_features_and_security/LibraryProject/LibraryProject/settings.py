@@ -130,3 +130,68 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# advanced_features_and_security/settings.py
+
+# --- Security Settings ---
+
+# IMPORTANT: Set DEBUG to False in production. Never run with DEBUG=True in production!
+DEBUG = False # Set to False for production
+
+# Allowed Hosts should list your domain names in production
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'your-production-domain.com'] # Example
+
+# XSS Protection
+SECURE_BROWSER_XSS_FILTER = True # Enables the X-XSS-Protection: 1; mode=block header
+SECURE_CONTENT_TYPE_NOSNIFF = True # Enables the X-Content-Type-Options: nosniff header
+
+# Clickjacking Protection
+X_FRAME_OPTIONS = 'DENY' # Prevents your site from being framed. Can also be 'SAMEORIGIN' if needed.
+
+# Cookie Security (for HTTPS only)
+CSRF_COOKIE_SECURE = True # Ensures CSRF cookie is only sent over HTTPS
+SESSION_COOKIE_SECURE = True # Ensures session cookie is only sent over HTTPS
+
+# Other important security settings (covered more in Task 3, but good to set now)
+# SECURE_SSL_REDIRECT = True # Will be set in Task 3
+# SECURE_HSTS_SECONDS = 31536000 # Will be set in Task 3 (1 year)
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True # Will be set in Task 3
+# SECURE_HSTS_PRELOAD = True # Will be set in Task 3
+
+# SECRET_KEY - Ensure this is kept secret and not hardcoded in production
+# Use environment variables or a secret management system.
+# For development, you might have it hardcoded, but for production:
+import os
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your_long_and_random_development_key_that_is_not_secret_in_prod')
+# Make sure to set DJANGO_SECRET_KEY in your production environment variables.
+
+# Password Validators (already present by default, but good to review)
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+# Add SecurityMiddleware to MIDDLEWARE (usually already there by default)
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware', # Make sure this is at the top
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', # This also applies X_FRAME_OPTIONS
+    # ... other middleware
+]
