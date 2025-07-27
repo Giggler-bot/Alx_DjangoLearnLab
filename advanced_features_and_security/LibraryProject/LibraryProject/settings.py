@@ -196,3 +196,30 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware', # This also applies X_FRAME_OPTIONS
     # ... other middleware
 ]
+
+# advanced_features_and_security/settings.py
+
+# ... (other settings)
+
+# --- HTTPS Enforcement ---
+# SECURE_SSL_REDIRECT: Redirects all non-HTTPS requests to HTTPS.
+# Essential for production when HTTPS is enabled.
+SECURE_SSL_REDIRECT = True
+
+# SECURE_HSTS_SECONDS: HTTP Strict Transport Security (HSTS)
+# Instructs browsers to only access your site via HTTPS for the specified duration (seconds).
+# 31536000 seconds = 1 year. This is a strong security measure.
+SECURE_HSTS_SECONDS = 31536000
+
+# SECURE_HSTS_INCLUDE_SUBDOMAINS: Includes all subdomains in the HSTS policy.
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# SECURE_HSTS_PRELOAD: Allows your site to be included in the HSTS preload list.
+# Requires careful consideration and typically means you commit to HTTPS forever.
+SECURE_HSTS_PRELOAD = True
+
+# IMPORTANT: If your Django app is behind a proxy that terminates SSL (e.g., Nginx, Apache, Heroku, AWS ELB),
+# you need to tell Django that the request is secure. This checks for the 'X-Forwarded-Proto' header set by proxies.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') # Add or ensure this line is present
+
+# ... (other settings)
