@@ -1,9 +1,11 @@
-# advanced_features_and_security/bookshelf/forms.py
-
+from django.apps import AppConfig
 from django import forms
 from .models import Book
+class ExampleForm(forms.Form):
+    name = forms.CharField(max_length=100, label="Your Name")
+    email = forms.EmailField(label="Your Email")
+    message = forms.CharField(widget=forms.Textarea, label="Message")
 
-class BookForm(forms.ModelForm):
-    class Meta:
-        model = Book
-        fields = ['title', 'author', 'published_date'] # Exclude added_by as it's set in view
+class BookshelfConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'bookshelf'
