@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import Book
 from .forms import BookForm # You might need to create this form
+from .forms import ExampleForm
+
 
 @login_required
 @permission_required('bookshelf.can_view_book', raise_exception=True)
