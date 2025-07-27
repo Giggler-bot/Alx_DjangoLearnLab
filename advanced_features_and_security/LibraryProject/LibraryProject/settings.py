@@ -104,7 +104,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # advanced_features_and_security/settings.py
 
-AUTH_USER_MODEL = 'accounts.CustomUser'
+# AUTH_USER_MODEL = 'accounts.CustomUser'
+AUTH_USER_MODEL = 'bookshelf.CustomUser'
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/books/' # Or whatever your default post-login page is
 LOGOUT_REDIRECT_URL = '/accounts/login/' # Redirect after logout
