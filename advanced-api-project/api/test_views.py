@@ -64,3 +64,5 @@ class BookAPITestCase(APITestCase):
         """Test that an unauthenticated user cannot delete a book."""
         response = self.client.delete(self.book_delete_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        self.client.login
