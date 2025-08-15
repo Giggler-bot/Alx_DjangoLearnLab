@@ -7,38 +7,39 @@
 </head>
 <body>
      <h1>Welcome to Django Blog</h1>
+{% if user.is_authenticated %}
+    <h2>Welcome, {{ user.username }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ u_form.as_p }}
+        <button type="submit" name="update">Update</button>
+    </form>
+    <p><a href="{% url 'logout' %}">Logout</a></p>
 
-    {% if user.is_authenticated %}
-        <h2>Profile</h2>
-        <form method="post" action="{% url 'profile' %}">
-            {% csrf_token %}
-            {{ u_form.as_p }}
-            <button type="submit">Update</button>
-        </form>
-        <p><a href="{% url 'logout' %}">Logout</a></p>
+{% else %}
+    <div style="display: flex; gap: 50px;">
 
-    {% else %}
-        <div style="display: flex; gap: 50px;">
-            <!-- Login form -->
-            <div>
-                <h2>Login</h2>
-                <form method="post" action="{% url 'login' %}">
-                    {% csrf_token %}
-                    {{ login_form.as_p }}
-                    <button type="submit">Login</button>
-                </form>
-            </div>
-
-            <!-- Register form -->
-            <div>
-                <h2>Register</h2>
-                <form method="post" action="{% url 'register' %}">
-                    {% csrf_token %}
-                    {{ register_form.as_p }}
-                    <button type="submit">Register</button>
-                </form>
-            </div>
+        <!-- Login form -->
+        <div>
+            <h2>Login</h2>
+            <form method="post" action="{% url 'index' %}">
+                {% csrf_token %}
+                {{ login_form.as_p }}
+                <button type="submit" name="login">Login</button>
+            </form>
         </div>
-    {% endif %}
+
+        <!-- Register form -->
+        <div>
+            <h2>Register</h2>
+            <form method="post" action="{% url 'index' %}">
+                {% csrf_token %}
+                {{ register_form.as_p }}
+                <button type="submit" name="register">Register</button>
+            </form>
+        </div>
+
+    </div>
+{% endif %}
 </body>
 </html>
