@@ -184,3 +184,6 @@ def tagged(request, slug):
     tag = Tag.objects.get(slug=slug)
     posts = Post.objects.filter(tags=tag)
     return render(request, 'blog/tagged_posts.html', {'tag': tag, 'posts': posts})
+
+
+    CommentCreateView

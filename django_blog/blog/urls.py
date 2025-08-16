@@ -38,3 +38,5 @@ urlpatterns = [
     path('search/', search, name='search'),
     path('tags/<slug:slug>/', tagged, name='tagged_posts'),
 ]
+
+["post/<int:pk>/update/"]
