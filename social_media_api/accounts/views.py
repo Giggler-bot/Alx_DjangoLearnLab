@@ -3,8 +3,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from django.contrib.auth import get_user_model
 from .models import CustomUser
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserSerializer
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserSerializer, TokenSerializer
+
+User = get_user_model()
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -12,6 +15,7 @@ def register_user(request):
     serializer = UserRegistrationSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
+        # Ensure token is created (should already be created in serializer)
         token, created = Token.objects.get_or_create(user=user)
         return Response({
             'token': token.key,
@@ -39,3 +43,13 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_token(request):
+    """Retrieve user's authentication token"""
+    token, created = Token.objects.get_or_create(user=request.user)
+    return Response({
+        'token': token.key,
+        'user': UserSerializer(request.user).data
+    })
