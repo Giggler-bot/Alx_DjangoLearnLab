@@ -39,6 +39,6 @@ urlpatterns = [
     path('tags/<slug:slug>/', tagged, name='tagged_posts'),
 ]
 
-["post/<int:pk>/update/"]
-["tags/<slug:tag_slug>/", "PostByTagListView.as_view()"]
-["comment/<int:pk>/update/", "post/<int:pk>/comments/new/"]
+# ["post/<int:pk>/update/"]
+# ["tags/<slug:tag_slug>/", "PostByTagListView.as_view()"]
+# ["comment/<int:pk>/update/", "post/<int:pk>/comments/new/"]

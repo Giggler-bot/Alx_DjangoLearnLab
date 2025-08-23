@@ -17,6 +17,6 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['content']
 
-        CommentCreateView
+        # CommentCreateView
 
-        ["TagWidget()", "widgets"]
+        # ["TagWidget()", "widgets"]

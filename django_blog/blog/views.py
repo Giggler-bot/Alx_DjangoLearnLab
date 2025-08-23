@@ -186,4 +186,4 @@ def tagged(request, slug):
     return render(request, 'blog/tagged_posts.html', {'tag': tag, 'posts': posts})
 
 
-    CommentCreateView
+    # CommentCreateView
