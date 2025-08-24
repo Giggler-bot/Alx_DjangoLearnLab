@@ -4,8 +4,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from .models import CustomUser
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserSerializer, TokenSerializer
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserSerializer, TokenSerializer, UserFollowSerializer
+from notifications.utils import create_notification
 
 User = get_user_model()
 
@@ -53,3 +55,75 @@ def get_user_token(request):
         'token': token.key,
         'user': UserSerializer(request.user).data
     })
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def follow_user(request, user_id):
+    """Follow a user"""
+    try:
+        user_to_follow = User.objects.get(id=user_id)
+        if user_to_follow == request.user:
+            return Response(
+                {'error': 'You cannot follow yourself'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Add to following and create notification
+        request.user.following.add(user_to_follow)
+        create_notification(
+            recipient=user_to_follow,
+            actor=request.user,
+            verb='followed',
+            target_object=user_to_follow
+        )
+        
+        return Response({
+            'message': f'You are now following {user_to_follow.username}',
+            'user': UserFollowSerializer(user_to_follow).data
+        }, status=status.HTTP_200_OK)
+        
+    except User.DoesNotExist:
+        return Response(
+            {'error': 'User not found'}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def unfollow_user(request, user_id):
+    """Unfollow a user"""
+    try:
+        user_to_unfollow = User.objects.get(id=user_id)
+        if user_to_unfollow == request.user:
+            return Response(
+                {'error': 'You cannot unfollow yourself'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        request.user.following.remove(user_to_unfollow)
+        return Response({
+            'message': f'You have unfollowed {user_to_unfollow.username}',
+            'user': UserFollowSerializer(user_to_unfollow).data
+        }, status=status.HTTP_200_OK)
+        
+    except User.DoesNotExist:
+        return Response(
+            {'error': 'User not found'}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+class FollowingListView(generics.ListAPIView):
+    """List users that the current user is following"""
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.following.all()
+
+class FollowersListView(generics.ListAPIView):
+    """List users who follow the current user"""
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.followers.all()
