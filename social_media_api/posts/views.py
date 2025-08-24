@@ -149,3 +149,6 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+["generics.get_object_or_404(Post, pk=pk)", "Notification.objects.create"]
